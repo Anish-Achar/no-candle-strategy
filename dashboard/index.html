@@ -1,0 +1,1296 @@
+<title>NO Candle Tuning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --plane: #f5f5f2;
+    --surface: #fcfcfb;
+    --raised: #ffffff;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #74726c;
+    --grid: #e8e7e1;
+    --axis: #c3c2b7;
+    --line: rgba(11, 11, 11, 0.10);
+    --s1: #2a78d6;
+    --s2: #eb6834;
+    --s3: #1baf7a;
+    --orig: #9a988f;
+    --pos: #2a78d6;
+    --neg: #e34948;
+    --mute-bar: #d3d1ca;
+    --good: #0ca30c;
+    --good-ink: #006300;
+    --bad: #d03b3b;
+    --bad-ink: #b42f2f;
+    --band: rgba(11, 11, 11, 0.04);
+    --wash: rgba(42, 120, 214, 0.10);
+    --agree: rgba(12, 163, 12, 0.10);
+    --l1: #9ec5f4;
+    --l10: #5598e7;
+    --l20: #2a78d6;
+    --l50: #184f95;
+    --shadow: 0 8px 28px rgba(11, 11, 11, 0.12);
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plane: #0d0d0d;
+      --surface: #1a1a19;
+      --raised: #232321;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #9a988f;
+      --grid: #2c2c2a;
+      --axis: #484842;
+      --line: rgba(255, 255, 255, 0.10);
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --orig: #8a887f;
+      --pos: #3987e5;
+      --neg: #e66767;
+      --mute-bar: #4a4944;
+      --good-ink: #0ca30c;
+      --bad-ink: #e66767;
+      --band: rgba(255, 255, 255, 0.045);
+      --wash: rgba(57, 135, 229, 0.16);
+      --agree: rgba(12, 163, 12, 0.16);
+      --l1: #256abf;
+      --l10: #3987e5;
+      --l20: #6da7ec;
+      --l50: #b7d3f6;
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --plane: #0d0d0d;
+    --surface: #1a1a19;
+    --raised: #232321;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #9a988f;
+    --grid: #2c2c2a;
+    --axis: #484842;
+    --line: rgba(255, 255, 255, 0.10);
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --orig: #8a887f;
+    --pos: #3987e5;
+    --neg: #e66767;
+    --mute-bar: #4a4944;
+    --good-ink: #0ca30c;
+    --bad-ink: #e66767;
+    --band: rgba(255, 255, 255, 0.045);
+    --wash: rgba(57, 135, 229, 0.16);
+    --agree: rgba(12, 163, 12, 0.16);
+    --l1: #256abf;
+    --l10: #3987e5;
+    --l20: #6da7ec;
+    --l50: #b7d3f6;
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+
+  body {
+    background: var(--plane);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 28px 56px;
+    display: grid;
+    gap: 18px;
+  }
+  .view { display: grid; gap: 18px; }
+  .view[hidden] { display: none; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+  /* Header */
+  .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 24px; padding-bottom: 4px; }
+  .eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-size: 30px; line-height: 1.15; font-weight: 600; letter-spacing: -0.01em; margin-top: 4px; }
+  .context { margin-top: 8px; color: var(--ink-2); font-size: 14px; max-width: 76ch; }
+  .context .sym { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+
+  .seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+  .seg button { border: 0; border-radius: 6px; padding: 6px 12px; background: transparent; color: var(--ink-2); font: 500 13px/1.3 var(--mono); cursor: pointer; }
+  .seg button:hover:not([disabled]):not([aria-pressed="true"]) { background: var(--band); color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .seg button[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .seg[hidden] { display: none; }
+  .seg.small button { font-family: var(--sans); font-size: 12.5px; padding: 4px 10px; }
+
+  /* Tiles */
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 15px; display: grid; gap: 6px; align-content: start; }
+  .tile-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+  .tile-value { font-size: 30px; line-height: 1.1; font-weight: 600; letter-spacing: -0.01em; }
+  .tile-meta { font-size: 12.5px; color: var(--muted); }
+  .tile-foot { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .chip { font-size: 11.5px; line-height: 1.5; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--band); color: var(--ink-2); white-space: nowrap; }
+  .delta { font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+  .delta.up { color: var(--good-ink); }
+  .delta.down { color: var(--bad-ink); }
+  .key-line { display: inline-block; width: 16px; height: 3px; border-radius: 2px; flex: none; }
+  .k-orig { background: var(--orig); }
+  .k-s1 { background: var(--s1); }
+  .k-s2 { background: var(--s2); }
+  .k-s3 { background: var(--s3); }
+
+  /* Panels */
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+  .panel-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 16px; }
+  h2 { font-size: 17px; font-weight: 600; }
+  .sub { margin-top: 3px; color: var(--ink-2); font-size: 13.5px; max-width: 80ch; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
+  .legend > span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  .sw.pos { background: var(--pos); }
+  .sw.neg { background: var(--neg); }
+  .sw.orig { background: var(--orig); }
+  .sw.s1 { background: var(--s1); }
+  .sw.s2 { background: var(--s2); }
+  .sw.s3 { background: var(--s3); }
+  .dotkey { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .dotkey.faded { opacity: 0.25; background: var(--ink-2); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  .chart { position: relative; min-width: 0; }
+  .chart-svg { display: block; overflow: visible; }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .zero { stroke: var(--axis); stroke-width: 1; }
+  .axis { stroke: var(--axis); stroke-width: 1; }
+  .limit { stroke: var(--bad); stroke-width: 1.5; }
+  .limit-label { fill: var(--bad-ink); font: 500 11px var(--sans); }
+  .mc-dot { fill: var(--bad); }
+  .tick { fill: var(--muted); font: 11px var(--mono); }
+  .ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .ln-orig { stroke: var(--orig); }
+  .ln-s1 { stroke: var(--s1); }
+  .ln-s2 { stroke: var(--s2); }
+  .ln-s3 { stroke: var(--s3); }
+  .dot { stroke: var(--surface); stroke-width: 2; }
+  .f-orig { fill: var(--orig); }
+  .f-s1 { fill: var(--s1); }
+  .f-s2 { fill: var(--s2); }
+  .f-s3 { fill: var(--s3); }
+  .ln-l1 { stroke: var(--l1); }
+  .ln-l10 { stroke: var(--l10); }
+  .ln-l20 { stroke: var(--l20); }
+  .ln-l50 { stroke: var(--l50); }
+  .ln-spx { stroke: var(--ink); }
+  .f-l1 { fill: var(--l1); }
+  .f-l10 { fill: var(--l10); }
+  .f-l20 { fill: var(--l20); }
+  .f-l50 { fill: var(--l50); }
+  .f-spx { fill: var(--ink); }
+  .k-l1 { background: var(--l1); }
+  .k-l10 { background: var(--l10); }
+  .k-l20 { background: var(--l20); }
+  .k-l50 { background: var(--l50); }
+  .k-spx { background: var(--ink); }
+  .lev-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .lev-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 12px 8px; display: grid; gap: 6px; min-width: 0; }
+  .lev-card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; }
+  .lev-card-head h3 { font-size: 14px; font-weight: 600; font-family: var(--mono); }
+  .vchip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
+  .vchip .status { width: 16px; height: 16px; font-size: 10px; }
+  .lev-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--ink-2); }
+  .lev-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+  .lev-legend strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  td.beat { background: var(--agree); }
+  td .mark { font-family: var(--sans); color: var(--good-ink); font-weight: 600; margin-left: 4px; }
+  .xhair { stroke: var(--axis); stroke-width: 1; }
+  .band { fill: var(--band); }
+  .band-label { fill: var(--muted); font: 11px var(--sans); }
+  .pt.d-B { fill: var(--s1); }
+  .pt.d-S { fill: var(--s2); }
+  .pt.d-L { fill: var(--s3); }
+  .pt.fail { opacity: 0.2; }
+  .pt.pass { opacity: 0.85; }
+  .mark-ring { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  .mark-label { fill: var(--ink); font: 600 12px var(--sans); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+  .hover-ring { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .hit { fill: transparent; cursor: crosshair; }
+
+  /* Takeaways */
+  .tk { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 28px; }
+  .tk h3 { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .status { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; color: #ffffff; font-size: 11px; font-weight: 600; flex: none; }
+  .status.ok { background: var(--good); }
+  .status.no { background: var(--bad); }
+  .tk ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; color: var(--ink-2); font-size: 14px; }
+  .tk li::marker { color: var(--muted); }
+  .tk-note { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 10px; font-size: 13.5px; color: var(--ink-2); }
+
+  /* Horizontal bars (one-change and overview) */
+  .stage1 { columns: 2 400px; column-gap: 36px; }
+  .s1-group { break-inside: avoid; display: grid; gap: 1px; margin-bottom: 10px; }
+  .s1-head { font: 600 11.5px/1.4 var(--sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 4px 0 4px; }
+  .s1-row { display: grid; grid-template-columns: minmax(118px, 148px) minmax(0, 1fr) 66px; gap: 10px; align-items: center; padding: 2px 6px; border-radius: 6px; font-size: 13px; cursor: default; }
+  .s1-row:hover, .s1-row:focus-visible { background: var(--wash); outline: none; }
+  .s1-row.base .s1-label { color: var(--muted); }
+  .s1-label { color: var(--ink-2); }
+  .s1-track { position: relative; height: 14px; }
+  .s1-track::before { content: ""; position: absolute; left: var(--zero, 50%); top: -3px; bottom: -3px; width: 1px; background: var(--axis); }
+  .s1-bar { position: absolute; top: 1px; height: 12px; }
+  .s1-bar.pos { background: var(--pos); border-radius: 0 4px 4px 0; }
+  .s1-bar.neg { background: var(--neg); border-radius: 4px 0 0 4px; }
+  .s1-bar.c-orig { background: var(--orig); }
+  .s1-bar.c-s1 { background: var(--s1); }
+  .s1-bar.c-s2 { background: var(--s2); }
+  .s1-bar.c-s3 { background: var(--s3); }
+  .s1-bar.right { border-radius: 0 4px 4px 0; }
+  .s1-bar.left { border-radius: 4px 0 0 4px; }
+  .s1-val { text-align: right; font: 12.5px var(--mono); font-variant-numeric: tabular-nums; }
+  .ov-bars { display: grid; gap: 2px; align-content: start; }
+  .ov-bars .s1-row { grid-template-columns: minmax(96px, 120px) minmax(0, 1fr) 76px; }
+  .ov-bars .s1-head { margin: 10px 0 2px; }
+  .ov-bars .s1-head:first-child { margin-top: 0; }
+
+  /* Small multiples */
+  .multiples { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .sm { border: 1px solid var(--line); border-radius: 10px; padding: 12px 12px 10px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+  .sm.wide { grid-column: 1 / -1; }
+  .sm-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .sm-head h3 { font-size: 13px; font-weight: 600; }
+  .sm-chosen { font: 11.5px var(--mono); color: var(--muted); white-space: nowrap; }
+  .sm-plot { position: relative; }
+  .sm-zero { position: absolute; left: 0; right: 0; height: 1px; background: var(--axis); }
+  .sm-cols, .sm-labels { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; }
+  .sm-cols { position: absolute; inset: 0; }
+  .sm-col { position: relative; height: 100%; border-radius: 4px; cursor: default; }
+  .sm-col:hover, .sm-col:focus-visible { background: var(--wash); outline: none; }
+  .sm-bar { position: absolute; left: 50%; transform: translateX(-50%); width: min(22px, 72%); }
+  .sm-bar.up { border-radius: 4px 4px 0 0; }
+  .sm-bar.down { border-radius: 0 0 4px 4px; }
+  .sm-bar.mute { background: var(--mute-bar); }
+  .sm-bar.s1 { background: var(--s1); }
+  .sm-bar.s2 { background: var(--s2); }
+  .sm-col.fail .sm-bar { opacity: 0.35; }
+  .sm-labels span { font: 11px/1.25 var(--mono); color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+  .sm-labels span.on { color: var(--ink); font-weight: 500; }
+  .sm-note { font-size: 12px; color: var(--muted); }
+
+  /* Setup cards */
+  .setups { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .setup { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 10px; align-content: start; }
+  .setup.wide { grid-column: 1 / -1; }
+  @media (min-width: 760px) { .setup.wide .kv { grid-template-columns: max-content 1fr max-content 1fr max-content 1fr; } }
+  .setup-head { display: flex; align-items: center; gap: 8px; }
+  .setup-head h3 { font-size: 15px; font-weight: 600; }
+  .setup-rule { font-size: 12.5px; color: var(--muted); }
+  .setup-figs { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+  .setup-net { font-size: 26px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; }
+  .setup-figs .fig { font-size: 12.5px; color: var(--ink-2); }
+  .setup-figs .fig strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 3px 14px; font-size: 13px; margin: 0; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; color: var(--ink); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .wide-table { min-width: 980px; }
+  th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-2); padding: 8px 10px; border-bottom: 1px solid var(--axis); white-space: nowrap; vertical-align: bottom; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; vertical-align: top; }
+  th.num, td.num { text-align: right; }
+  td.num { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  td .sub2 { display: block; font-size: 11.5px; color: var(--muted); font-family: var(--sans); }
+  tr.pick td { background: var(--wash); }
+  #top-body tr:first-child td { background: var(--wash); }
+  .nt-label { font-weight: 500; white-space: normal; min-width: 170px; }
+  .nt-note { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .settings-cell { white-space: normal; min-width: 280px; color: var(--ink-2); font-size: 12.5px; }
+  .gchip { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
+  .gchip .status { width: 16px; height: 16px; font-size: 10px; }
+  .matrix td.agree { background: var(--agree); }
+  .matrix th.pair, .matrix td.pairv { font-family: var(--mono); }
+  .matrix td:first-child { color: var(--ink-2); }
+  .pair-link { border: 0; background: none; padding: 0; color: var(--s1); font: 500 13px var(--mono); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* Notes */
+  .notes { display: grid; gap: 10px; padding: 6px 2px 0; }
+  .notes ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; color: var(--ink-2); font-size: 14px; max-width: 92ch; }
+  .foot { color: var(--muted); font-size: 12.5px; }
+
+  /* Tooltip */
+  .tip { position: fixed; z-index: 10; pointer-events: none; background: var(--raised); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); padding: 8px 10px; font-size: 12.5px; display: grid; gap: 3px; max-width: 300px; }
+  .tip-title { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+  .tip-row { display: flex; align-items: center; gap: 8px; color: var(--ink-2); }
+  .tip-row strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tip-key { width: 12px; height: 2px; border-radius: 1px; flex: none; }
+
+  @media (max-width: 900px) {
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tk, .setups, .two, .lev-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .page { padding-inline: 16px; padding-block: 20px 40px; }
+    h1 { font-size: 25px; }
+    .tiles { grid-template-columns: 1fr; }
+    .tile-value { font-size: 27px; }
+    .panel { padding: 14px 14px 12px; }
+    .s1-row { grid-template-columns: minmax(96px, 112px) minmax(0, 1fr) 58px; gap: 8px; font-size: 12.5px; }
+  }
+</style>
+
+<div class="page">
+  <header class="top">
+    <div>
+      <p class="eyebrow">NO Candle Strategy · OANDA · 15-minute</p>
+      <h1 id="title">Settings search results</h1>
+      <p class="context" id="context"></p>
+    </div>
+    <div class="seg" role="group" aria-label="View" id="market-switch"></div>
+  </header>
+
+  <!-- ============ ALL PAIRS ============ -->
+  <div class="view" id="view-all" hidden>
+    <section class="panel" aria-labelledby="ov-t-title">
+      <div>
+        <h2 id="ov-t-title">All pairs at a glance</h2>
+        <p class="sub" id="ov-t-sub"></p>
+      </div>
+      <div class="table-wrap">
+        <table class="wide-table">
+          <thead id="ov-head"></thead>
+          <tbody id="ov-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="lev-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="lev-title">Leverage vs the S&amp;P 500</h2>
+          <p class="sub" id="lev-sub"></p>
+        </div>
+        <div class="seg small" role="group" aria-label="Leverage" id="lev-switch"></div>
+      </div>
+      <div class="lev-grid" id="lev-grid"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Return on $100K</th>
+              <th class="num">1×<br>(10% size)</th>
+              <th class="num">10×<br>(100% size)</th>
+              <th class="num">20×<br>(200% size)</th>
+              <th class="num">50×<br>(500% size)</th>
+              <th>Beats the S&amp;P 500 from</th>
+            </tr>
+          </thead>
+          <tbody id="lev-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="two">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Net profit at 10% size</h2>
+            <p class="sub">Same position size everywhere, so this compares the settings alone.</p>
+          </div>
+          <div class="legend">
+            <span><span class="sw orig"></span>Original</span>
+            <span><span class="sw s1"></span>Pair script</span>
+            <span><span class="sw s2"></span>Best overall (where different)</span>
+          </div>
+        </div>
+        <div class="ov-bars" id="ov-bars10"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Net profit at the chosen size</h2>
+            <p class="sub" id="ov-sized-sub"></p>
+          </div>
+          <div class="legend" id="ov-sized-legend"></div>
+        </div>
+        <div class="ov-bars" id="ov-barsSized"></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="ov-m-title">
+      <div>
+        <h2 id="ov-m-title">Settings by pair</h2>
+        <p class="sub" id="ov-m-sub"></p>
+      </div>
+      <div class="table-wrap">
+        <table class="matrix">
+          <thead id="ov-m-head"></thead>
+          <tbody id="ov-m-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="ov-tk-title">
+      <h2 id="ov-tk-title">What held across pairs</h2>
+      <div class="tk" id="ov-takeaways"></div>
+    </section>
+  </div>
+
+  <!-- ============ ONE PAIR ============ -->
+  <div class="view" id="view-pair" hidden>
+    <section class="tiles" id="tiles" aria-label="Summary"></section>
+
+    <section class="panel" aria-labelledby="eq-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="eq-title">Equity at 10% size</h2>
+          <p class="sub">Closed-trade profit on a $100K account at 10% of equity per trade. Hover for the value on any date.</p>
+        </div>
+        <div class="legend" id="eq-legend"></div>
+      </div>
+      <div class="chart" id="eq-chart"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="su-title">
+      <div>
+        <h2 id="su-title">Safer vs aggressive setup</h2>
+        <p class="sub" id="su-sub"></p>
+      </div>
+      <div class="setups" id="setups"></div>
+      <div class="panel-head">
+        <p class="sub" id="sz-eq-sub"></p>
+        <div class="legend" id="sz-eq-legend"></div>
+      </div>
+      <div class="chart" id="sz-eq-chart"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="sz-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="sz-title">Position size</h2>
+          <p class="sub">The settings run at 5% to 100% of equity per trade, no leverage. Profit and drawdown grow together until 100%, where every pair ran into margin calls; the ring marks the size chosen.</p>
+        </div>
+        <div class="legend" id="sz-legend"></div>
+      </div>
+      <div class="two">
+        <div class="chart" id="sz-net"></div>
+        <div class="chart" id="sz-dd"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead id="sz-head"></thead>
+          <tbody id="sz-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="plev-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="plev-title">Leverage vs the S&amp;P 500</h2>
+          <p class="sub" id="plev-sub"></p>
+        </div>
+        <div class="lev-legend" id="plev-legend"></div>
+      </div>
+      <div class="chart" id="plev-chart"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Leverage</th>
+              <th class="num">Size per trade</th>
+              <th class="num">Margin</th>
+              <th class="num">Net</th>
+              <th class="num">Return</th>
+              <th class="num">Max DD</th>
+              <th class="num">Trades</th>
+              <th class="num">PF</th>
+              <th class="num">Margin calls</th>
+              <th>vs S&amp;P 500</th>
+            </tr>
+          </thead>
+          <tbody id="plev-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="tk-title">
+      <h2 id="tk-title">What worked, what didn't</h2>
+      <div class="tk" id="takeaways"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="s1-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="s1-title">Changing one setting at a time</h2>
+          <p class="sub" id="s1-sub"></p>
+        </div>
+        <div class="legend">
+          <span><span class="sw pos"></span>Better than original</span>
+          <span><span class="sw neg"></span>Worse than original</span>
+        </div>
+      </div>
+      <div class="stage1" id="stage1"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="sm-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="sm-title">How fragile is each winner</h2>
+          <p class="sub" id="sm-sub"></p>
+        </div>
+        <div class="seg small" role="group" aria-label="Winner" id="sens-switch">
+          <button type="button" id="s-script" data-sens="script">Pair script</button>
+          <button type="button" id="s-best" data-sens="best">Best overall</button>
+        </div>
+      </div>
+      <div class="multiples" id="sens"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="sc-title">
+      <div class="panel-head">
+        <div>
+          <h2 id="sc-title">Every combination tested</h2>
+          <p class="sub" id="sc-sub"></p>
+        </div>
+        <div class="legend">
+          <span><span class="dotkey" style="background: var(--s1)"></span>Longs + shorts</span>
+          <span><span class="dotkey" style="background: var(--s2)"></span>Shorts only</span>
+          <span><span class="dotkey" style="background: var(--s3)"></span>Longs only</span>
+          <span><span class="dotkey faded"></span>Fails guardrails</span>
+        </div>
+      </div>
+      <div class="chart" id="sc-chart"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="top-title">
+      <div>
+        <h2 id="top-title">Top 10 combinations at 10% size</h2>
+        <p class="sub">Ranked by net profit among combinations that pass your guardrails. Identical results are shown once.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="wide-table">
+          <thead>
+            <tr>
+              <th>#</th><th class="num">Net</th><th class="num">Trades</th><th class="num">Win %</th><th class="num">PF</th><th class="num">Max DD</th>
+              <th>Trend</th><th class="num">Pivot</th><th class="num">EMA</th><th class="num">Validity</th><th class="num">Pending</th><th class="num">Wick tol</th><th>Stop loss</th><th class="num">RR</th><th>Direction</th>
+            </tr>
+          </thead>
+          <tbody id="top-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="nt-title">
+      <div>
+        <h2 id="nt-title">Other notable results at 10% size</h2>
+        <p class="sub" id="nt-sub"></p>
+      </div>
+      <div class="table-wrap">
+        <table class="wide-table">
+          <thead>
+            <tr>
+              <th>Result</th><th class="num">Net</th><th class="num">Trades</th><th class="num">Win %</th><th class="num">PF</th><th class="num">Max DD</th><th class="num">Longs</th><th class="num">Shorts</th><th>Guardrails</th><th>Settings</th>
+            </tr>
+          </thead>
+          <tbody id="nt-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section class="notes" aria-labelledby="notes-title">
+    <h2 id="notes-title">Read these numbers with care</h2>
+    <ul>
+      <li>Each pair was tuned and measured on the same ten months of data. Settings found this way usually do worse on new data.</li>
+      <li>No commission and no spread. TradingView's OANDA prices don't charge the spread, so settings with many trades look better here than they would live.</li>
+      <li id="note-guard"></li>
+      <li>Larger position sizes grow profit and drawdown together. A size that stays under $10,000 drawdown in this period can still exceed it later.</li>
+      <li>Leverage multiplies costs as well as profits. No spread or commission is included; with typical spreads of about 1–2.5 pips, 50× (500% of equity per trade) would cost very roughly 5–20% of the account over these trades. Many regulators also cap retail forex leverage (for example 30:1 on major pairs in the UK and EU), so 50× may not be available to you.</li>
+      <li>TradingView shows a "may use look-ahead bias" caution on this strategy. The script is written to avoid look-ahead, but check a few fills on the chart before trusting the numbers.</li>
+      <li>Ranges tested: trend mode (all 4), pivot 1–5, EMA 50–300, validity 3–20, pending 1–5, wick tolerance 0–10 ticks, swing stop buffer 0–20 ticks with or without the wick, NO-range stop 0.5–6×, reward:risk 0.5–3, direction, position size 5–100% of equity, and leverage of 10×, 20× and 50× (10% size × leverage).</li>
+    </ul>
+    <p class="foot">Backtests run in the TradingView Strategy Tester in September 2026 · OANDA data · 15-minute chart · Nov 30 2025 – Sep 25 2026 · $100K starting capital.</p>
+  </section>
+</div>
+
+<div class="tip" id="tip" hidden></div>
+
+<script src="data-eurusd.js"></script>
+<script src="data-gbpjpy.js"></script>
+<script src="data-gbpusd.js"></script>
+<script src="data-audjpy.js"></script>
+<script src="data-leverage.js"></script>
+<script src="overview.js"></script>
+<script>
+(function () {
+  'use strict';
+  const NC = window.NC || {};
+  const OV = window.NC_OVERVIEW || {};
+  const PAIRS = ['EURUSD', 'GBPJPY', 'GBPUSD', 'AUDJPY'].filter((p) => NC[p]);
+  const $ = (s) => document.querySelector(s);
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const sv = (tag, attrs, parent) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+  const svText = (parent, attrs, text) => { const t = sv('text', attrs, parent); t.textContent = text; return t; };
+  const money = (v, signed = true) => {
+    const a = Math.round(Math.abs(v));
+    const sign = v < 0 && a !== 0 ? '−' : (signed && v > 0 && a !== 0 ? '+' : '');
+    return sign + '$' + a.toLocaleString('en-US');
+  };
+  const pct = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1) + '%';
+  const DIR = { both: 'Longs + shorts', short: 'Shorts only', long: 'Longs only', B: 'Longs + shorts', S: 'Shorts only', L: 'Longs only' };
+  const DAY0 = Date.UTC(2025, 10, 30);
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dateText = (dt) => MONTHS[dt.getUTCMonth()] + ' ' + dt.getUTCDate() + ' ' + dt.getUTCFullYear();
+  const dayLabel = (d) => dateText(new Date(DAY0 + d * 864e5));
+  const SHORT = { 'Internal + EMA': 'Int + EMA', 'Internal only': 'Internal', 'EMA only': 'EMA' };
+  const shortLabel = (s) => SHORT[s] || s.replace(/^Swing\+/, '+').replace(/^NO×/, '×');
+  const splitText = (c) => 'Longs ' + (c.dir === 'short' ? 'off' : money(c.L)) + ' · Shorts ' + (c.dir === 'long' ? 'off' : money(c.S));
+  // Several results coincide on some pairs; these let the page show each distinct result once.
+  const sameResult = (a, b) => !!a && !!b && a.net === b.net && a.n === b.n;
+  const pickRow = (S) => S && S.rows.find((r) => r.size === S.pick);
+  const setupsSame = (Z) => {
+    if (!Z || !Z.safer || !Z.aggressive) return false;
+    const a = pickRow(Z.safer), b = pickRow(Z.aggressive);
+    return !!a && !!b && Z.safer.pick === Z.aggressive.pick && a.net === b.net && a.trades === b.trades;
+  };
+  const bestIsScript = (D) => sameResult(D.configs.best, D.configs.script);
+  const pairName = (p) => p.slice(0, 3) + '/' + p.slice(3);
+
+  const parseCurve = (s) => (s || '').trim().split(/\s+/).filter(Boolean).map((t) => { const i = t.indexOf(':'); return [+t.slice(0, i), +t.slice(i + 1)]; });
+  const parseScatter = (s) => s.split(';').filter(Boolean).map((t) => { const p = t.split(','); return { net: +p[0], n: +p[1], dd: +p[2], pf: +p[3], dir: p[4] }; });
+  const parseSens = (s) => {
+    const out = [];
+    const re = /\s*(\*?)([^:\s][^:]*?):(-?[\d.]+):(\d+)(:x)?(?=\s|$)/g;
+    let m;
+    while ((m = re.exec(s))) out.push({ chosen: m[1] === '*', label: m[2].trim(), net: +m[3], n: +m[4], fail: !!m[5] });
+    return out;
+  };
+  function niceTicks(min, max, count) {
+    const span = (max - min) || 1;
+    const raw = span / count;
+    const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const f = raw / mag;
+    const step = (f >= 7.5 ? 10 : f >= 3.5 ? 5 : f >= 1.5 ? 2 : 1) * mag;
+    const lo = Math.floor(min / step) * step;
+    const hi = Math.ceil(max / step) * step;
+    const ticks = [];
+    for (let v = lo; v <= hi + step / 2; v += step) ticks.push(Math.round(v * 1e6) / 1e6);
+    return { lo, hi, ticks };
+  }
+
+  // Tooltip
+  const tip = $('#tip');
+  function placeTip(cx, cy) {
+    const pad = 14; const w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = cx + pad, y = cy + pad;
+    if (x + w > window.innerWidth - 8) x = cx - w - pad;
+    if (y + h > window.innerHeight - 8) y = cy - h - pad;
+    tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+  }
+  function showTip(cx, cy, title, rows) {
+    tip.replaceChildren();
+    if (title) tip.appendChild(el('div', 'tip-title', title));
+    rows.forEach((r) => {
+      const row = el('div', 'tip-row');
+      if (r.key) { const k = el('span', 'tip-key'); k.style.background = r.key; row.appendChild(k); }
+      row.appendChild(el('strong', null, r.value));
+      if (r.label) row.appendChild(el('span', null, r.label));
+      tip.appendChild(row);
+    });
+    tip.hidden = false; placeTip(cx, cy);
+  }
+  const hideTip = () => { tip.hidden = true; };
+  function bindTip(node, title, rows) {
+    node.addEventListener('pointermove', (e) => showTip(e.clientX, e.clientY, title, rows));
+    node.addEventListener('pointerleave', hideTip);
+    node.addEventListener('focus', () => { const r = node.getBoundingClientRect(); showTip(r.right, r.top, title, rows); });
+    node.addEventListener('blur', hideTip);
+  }
+
+  let view = 'ALL';
+  let sensKey = 'script';
+  const passes = (D, n, dd) => n >= 100 && dd <= D.ddCap + 0.5;
+  const scriptName = (D) => pairName(D.label).toLowerCase() + ' strat';
+  const settingsText = (s) => [s.trend, 'pivot ' + s.pivot, 'EMA ' + s.ema, 'validity ' + s.validity, 'pending ' + s.pending, 'wick ' + s.wick, s.sl, 'RR ' + s.rr].join(' · ');
+
+  // ---------- Shared chart pieces ----------
+  function lineChart(host, legendHost, series, opts) {
+    host.replaceChildren();
+    const fmtVal = opts.val || money;
+    const fmtTick = opts.tick || ((t) => money(t, false));
+    if (legendHost) {
+      legendHost.replaceChildren();
+      series.forEach((s) => { const it = el('span'); it.appendChild(el('span', 'key-line k-' + s.cls)); it.appendChild(document.createTextNode(s.name)); it.appendChild(el('strong', null, fmtVal(s.final))); legendHost.appendChild(it); });
+    }
+    const W = Math.max(280, host.clientWidth);
+    const H = opts.height || (W < 560 ? 230 : 300);
+    const m = { l: 62, r: 16, t: 12, b: 30 };
+    let min = 0, max = 0;
+    series.forEach((s) => s.pts.forEach((p) => { min = Math.min(min, p[1]); max = Math.max(max, p[1]); }));
+    if (opts.min != null) min = Math.min(min, opts.min);
+    if (opts.max != null) max = Math.max(max, opts.max);
+    const { lo, hi, ticks } = niceTicks(min, max, opts.nTicks || (W < 560 ? 4 : 6));
+    const X1 = 300;
+    const x = (d) => m.l + (d / X1) * (W - m.l - m.r);
+    const y = (v) => m.t + ((hi - v) / (hi - lo)) * (H - m.t - m.b);
+    const svg = sv('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, class: 'chart-svg', role: 'img', 'aria-label': opts.label }, host);
+    ticks.forEach((t) => { sv('line', { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? 'zero' : 'grid' }, svg); svText(svg, { x: m.l - 8, y: y(t), class: 'tick', 'text-anchor': 'end', 'dominant-baseline': 'middle' }, fmtTick(t)); });
+    const months = [[1, 'Dec'], [32, "Jan '26"], [63, 'Feb'], [91, 'Mar'], [122, 'Apr'], [152, 'May'], [183, 'Jun'], [213, 'Jul'], [244, 'Aug'], [275, 'Sep']];
+    months.forEach(([d, lab], i) => { if (W < 560 && i % 2) return; sv('line', { x1: x(d), x2: x(d), y1: H - m.b, y2: H - m.b + 4, class: 'axis' }, svg); svText(svg, { x: x(d), y: H - m.b + 18, class: 'tick', 'text-anchor': 'middle' }, lab); });
+    series.forEach((s) => { let d = ''; s.pts.forEach((p, i) => { d += i === 0 ? 'M' + x(p[0]) + ',' + y(p[1]) : 'H' + x(p[0]) + 'V' + y(p[1]); }); sv('path', { d: d, class: 'ln ln-' + s.cls }, svg); });
+    series.forEach((s) => { const last = s.pts[s.pts.length - 1]; sv('circle', { cx: x(last[0]), cy: y(last[1]), r: 4, class: 'dot f-' + s.cls }, svg); });
+    const hair = sv('line', { y1: m.t, y2: H - m.b, class: 'xhair', visibility: 'hidden' }, svg);
+    const hdots = series.map((s) => sv('circle', { r: 4, class: 'dot f-' + s.cls, visibility: 'hidden' }, svg));
+    const hit = sv('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, class: 'hit' }, svg);
+    const valueAt = (s, day) => { let v = 0; for (const p of s.pts) { if (p[0] <= day) v = p[1]; else break; } return v; };
+    hit.addEventListener('pointermove', (e) => {
+      const r = svg.getBoundingClientRect();
+      const day = Math.max(0, Math.min(X1, ((e.clientX - r.left - m.l) / (W - m.l - m.r)) * X1));
+      hair.setAttribute('x1', x(day)); hair.setAttribute('x2', x(day)); hair.setAttribute('visibility', 'visible');
+      const vals = series.map((s) => valueAt(s, day));
+      hdots.forEach((c, i) => { c.setAttribute('cx', x(day)); c.setAttribute('cy', y(vals[i])); c.setAttribute('visibility', 'visible'); });
+      showTip(e.clientX, e.clientY, dayLabel(day), series.map((s, i) => ({ key: s.color, value: fmtVal(vals[i]), label: s.name, v: vals[i] })).sort((a, b) => b.v - a.v));
+    });
+    hit.addEventListener('pointerleave', () => { hair.setAttribute('visibility', 'hidden'); hdots.forEach((c) => c.setAttribute('visibility', 'hidden')); hideTip(); });
+  }
+
+  function sizeChart(host, series, opts) {
+    host.replaceChildren();
+    const W = Math.max(260, host.clientWidth);
+    const H = W < 420 ? 210 : 240;
+    const m = { l: 64, r: 14, t: 24, b: 34 };
+    const xs = opts.sizes;
+    let min = 0, max = opts.limit || 0;
+    series.forEach((s) => s.rows.forEach((r) => { min = Math.min(min, r[opts.field]); max = Math.max(max, r[opts.field]); }));
+    const { lo, hi, ticks } = niceTicks(min, max * 1.04, 5);
+    const x = (v) => m.l + ((v - 0) / (100 - 0)) * (W - m.l - m.r);
+    const y = (v) => m.t + ((hi - v) / (hi - lo)) * (H - m.t - m.b);
+    const svg = sv('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, class: 'chart-svg', role: 'img', 'aria-label': opts.title }, host);
+    svText(svg, { x: m.l, y: 12, class: 'tick' }, opts.title);
+    ticks.forEach((t) => { sv('line', { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? 'zero' : 'grid' }, svg); svText(svg, { x: m.l - 8, y: y(t), class: 'tick', 'text-anchor': 'end', 'dominant-baseline': 'middle' }, money(t, false)); });
+    [0, 25, 50, 75, 100].forEach((t) => { sv('line', { x1: x(t), x2: x(t), y1: H - m.b, y2: H - m.b + 4, class: 'axis' }, svg); svText(svg, { x: x(t), y: H - m.b + 18, class: 'tick', 'text-anchor': 'middle' }, t + '%'); });
+    if (opts.limit) { sv('line', { x1: m.l, x2: W - m.r, y1: y(opts.limit), y2: y(opts.limit), class: 'limit' }, svg); svText(svg, { x: W - m.r, y: y(opts.limit) - 6, class: 'limit-label', 'text-anchor': 'end' }, money(opts.limit, false) + ' limit'); }
+    series.forEach((s) => {
+      const rows = s.rows.filter((r) => r[opts.field] != null);
+      let d = ''; rows.forEach((r, i) => { d += (i ? 'L' : 'M') + x(r.size) + ',' + y(r[opts.field]); });
+      sv('path', { d: d, class: 'ln ln-' + s.cls }, svg);
+      rows.forEach((r) => {
+        const c = sv('circle', { cx: x(r.size), cy: y(r[opts.field]), r: 3.5, class: 'dot f-' + s.cls }, svg);
+        const hitc = sv('circle', { cx: x(r.size), cy: y(r[opts.field]), r: 12, class: 'hit' }, svg);
+        hitc.addEventListener('pointermove', (e) => showTip(e.clientX, e.clientY, s.name + ' at ' + r.size + '%', [
+          { value: money(r.net), label: 'net profit' }, { value: money(r.dd, false), label: 'max drawdown' }, { value: String(r.trades), label: 'trades' }, { value: r.mc ? r.mc + ' margin calls' : 'No margin calls' },
+        ]));
+        hitc.addEventListener('pointerleave', hideTip);
+        if (r.size === s.pick) sv('circle', { cx: x(r.size), cy: y(r[opts.field]), r: 7, class: 'mark-ring' }, svg);
+        if (r.mc) {
+          sv('circle', { cx: x(r.size), cy: y(r[opts.field]), r: 4, class: 'dot mc-dot' }, svg);
+          if (opts.field === 'net' && !svg.querySelector('.mc-label')) svText(svg, { x: x(r.size) - 8, y: y(r[opts.field]) - 10, class: 'limit-label mc-label', 'text-anchor': 'end' }, 'margin calls');
+        }
+      });
+    });
+  }
+
+  function hbar(host, rows, opts) {
+    // rows: [{label, value, cls, tip:{title, rows}}], one shared scale; the zero line sits where negatives end
+    const posMax = Math.max(1, ...rows.map((r) => Math.max(0, r.value)));
+    const negMax = Math.max(0, ...rows.map((r) => Math.max(0, -r.value)));
+    const span = posMax + negMax;
+    let group = null;
+    rows.forEach((r) => {
+      if (r.group && r.group !== group) { group = r.group; host.appendChild(el('h3', 's1-head', group)); }
+      const row = el('div', 's1-row'); row.tabIndex = 0;
+      row.appendChild(el('span', 's1-label', r.label));
+      const track = el('span', 's1-track'); track.style.setProperty('--zero', (negMax / span) * 100 + '%');
+      const bar = el('span', 's1-bar ' + (r.cls ? 'c-' + r.cls + ' ' : '') + (r.value >= 0 ? (r.cls ? 'right' : 'pos') : (r.cls ? 'left' : 'neg')));
+      const w = (Math.abs(r.value) / span) * 100;
+      bar.style.width = w + '%';
+      if (r.value >= 0) bar.style.left = (negMax / span) * 100 + '%'; else bar.style.right = (posMax / span) * 100 + '%';
+      track.appendChild(bar); row.appendChild(track);
+      row.appendChild(el('span', 's1-val', r.text || money(r.value)));
+      if (r.tip) bindTip(row, r.tip.title, r.tip.rows);
+      host.appendChild(row);
+    });
+  }
+
+  // ---------- Overview ----------
+  function renderOverview() {
+    $('#title').textContent = 'Four pairs compared';
+    const c = $('#context'); c.replaceChildren();
+    c.appendChild(document.createTextNode('OANDA · 15-minute · Nov 30 2025 – Sep 25 2026 · ' + PAIRS.length + ' pairs · ' + PAIRS.reduce((s, p) => s + NC[p].tested, 0).toLocaleString('en-US') + ' combinations backtested. Each pair\'s script uses its best longs + shorts settings.'));
+    // The aggressive columns, bars and settings only appear when they differ from the safer setup on some pair.
+    const aggDiffers = PAIRS.some((p) => NC[p].sizing && NC[p].sizing.aggressive && !setupsSame(NC[p].sizing));
+    $('#ov-t-sub').textContent = 'Net profit over Nov 30 2025 – Sep 25 2026. The @10% columns use 10% of equity per trade, so the pairs compare directly. ' + (aggDiffers ? 'The sized columns apply each setup\'s largest size without margin calls.' : 'The last money column is the pair script at its largest size without margin calls (the aggressive search landed on the same result for every pair).') + ' Click a pair to open its page.';
+    const head0 = $('#ov-head'); head0.replaceChildren();
+    const hr0 = el('tr');
+    const cols = [['Pair', ''], ['Price move', 'num'], ['Original\n@10%', 'num'], ['Pair script\n@10%', 'num'], ['Best overall\n@10%', 'num']]
+      .concat(aggDiffers ? [['Safer setup\nsized', 'num'], ['Aggressive setup\nsized', 'num']] : [['Pair script\nat chosen size', 'num']])
+      .concat([['Script\ntrades', 'num'], ['Script\nPF', 'num'], ['Combos\ntested', 'num']]);
+    cols.forEach(([t, c]) => { const th = el('th', c || null); t.split('\n').forEach((line, i) => { if (i) th.appendChild(el('br')); th.appendChild(document.createTextNode(line)); }); hr0.appendChild(th); });
+    head0.appendChild(hr0);
+    const tb = $('#ov-table'); tb.replaceChildren();
+    PAIRS.forEach((p) => {
+      const D = NC[p]; const C = D.configs; const Z = D.sizing || {};
+      const tr = el('tr');
+      const td0 = el('td'); const b = el('button', 'pair-link', pairName(p)); b.type = 'button'; b.addEventListener('click', () => go(p)); td0.appendChild(b); td0.appendChild(el('span', 'sub2', scriptName(D))); tr.appendChild(td0);
+      tr.appendChild(el('td', 'num', pct(D.buyHold)));
+      tr.appendChild(el('td', 'num', money(C.original.net)));
+      const tdS = el('td', 'num', money(C.script.net)); tdS.appendChild(el('span', 'sub2', 'DD ' + money(C.script.dd, false))); tr.appendChild(tdS);
+      const tdB = el('td', 'num', money(C.best.net)); tdB.appendChild(el('span', 'sub2', bestIsScript(D) ? 'Same as script' : DIR[C.best.dir])); tr.appendChild(tdB);
+      (aggDiffers ? [Z.safer, Z.aggressive] : [Z.safer]).forEach((S) => {
+        const pk = pickRow(S);
+        const td = el('td', 'num', pk ? money(pk.net) : '–');
+        if (pk) td.appendChild(el('span', 'sub2', S.pick + '% · DD ' + money(pk.dd, false)));
+        tr.appendChild(td);
+      });
+      tr.appendChild(el('td', 'num', String(C.script.n)));
+      tr.appendChild(el('td', 'num', C.script.pf.toFixed(2)));
+      tr.appendChild(el('td', 'num', D.tested.toLocaleString('en-US')));
+      tb.appendChild(tr);
+    });
+    // Bars at 10%: best overall only where it differs from the script.
+    const h10 = $('#ov-bars10'); h10.replaceChildren();
+    const rows10 = [];
+    PAIRS.forEach((p) => {
+      const D = NC[p]; const C = D.configs;
+      const keys = [['original', 'orig', 'Original'], ['script', 's1', 'Pair script']].concat(bestIsScript(D) ? [] : [['best', 's2', 'Best overall']]);
+      keys.forEach(([k, cls, nm]) => rows10.push({ group: pairName(p), label: nm, value: C[k].net, cls, tip: { title: pairName(p) + ' · ' + nm + ' @10%', rows: [{ value: money(C[k].net), label: 'net profit' }, { value: String(C[k].n), label: 'trades' }, { value: money(C[k].dd, false), label: 'max drawdown' }, { value: DIR[C[k].dir] }] } }));
+    });
+    hbar(h10, rows10);
+    // Bars at the chosen size.
+    const sizedKinds = aggDiffers ? [['safer', 's1', 'Safer'], ['aggressive', 's3', 'Aggressive']] : [['safer', 's1', 'Pair script']];
+    $('#ov-sized-sub').textContent = aggDiffers ? 'Each setup at its largest size without margin calls; max drawdown stays under $10,000.' : 'Each pair script at its largest size without margin calls (75% of equity per trade). Max drawdown stays far under $10,000.';
+    const sl = $('#ov-sized-legend'); sl.replaceChildren();
+    sizedKinds.forEach(([, cls, nm]) => { const s = el('span'); s.appendChild(el('span', 'sw ' + cls)); s.appendChild(document.createTextNode(nm)); sl.appendChild(s); });
+    const hs = $('#ov-barsSized'); hs.replaceChildren();
+    const rowsS = [];
+    PAIRS.forEach((p) => { const Z = NC[p].sizing; if (!Z) return; sizedKinds.forEach(([k, cls, nm]) => { const S = Z[k]; const pk = pickRow(S); if (!pk) return; rowsS.push({ group: aggDiffers ? pairName(p) : null, label: aggDiffers ? nm : pairName(p), value: pk.net, cls, text: money(pk.net), tip: { title: pairName(p) + ' · ' + nm + ' at ' + S.pick + '%', rows: [{ value: money(pk.net), label: 'net profit' }, { value: money(pk.dd, false) + ' (' + pk.ddPct.toFixed(1) + '%)', label: 'max drawdown' }, { value: String(pk.trades), label: 'trades' }] } }); }); });
+    hbar(hs, rowsS);
+    // Settings matrix; rows every pair agrees on are highlighted.
+    $('#ov-m-sub').textContent = 'The defaults saved in each pair\'s script (all saved at 10% of equity per trade), plus the largest size each ran at without margin calls. ' + (aggDiffers ? 'The aggressive setup follows below. ' : '') + 'Green rows are settings every pair agrees on.';
+    const head = $('#ov-m-head'); head.replaceChildren();
+    const hr = el('tr'); hr.appendChild(el('th', null, 'Setting')); PAIRS.forEach((p) => hr.appendChild(el('th', 'pair', pairName(p)))); head.appendChild(hr);
+    const body = $('#ov-m-body'); body.replaceChildren();
+    const FIELDS = [['trend', 'Trend mode'], ['pivot', 'Pivot length'], ['ema', 'EMA length'], ['validity', 'Setup validity'], ['pending', 'Max pending'], ['wick', 'Wick tolerance (ticks)'], ['sl', 'Stop loss'], ['rr', 'Reward:risk']];
+    const addRow = (nm, vals) => {
+      const agree = vals.every((v) => v === vals[0] && v !== '–');
+      const r = el('tr'); r.appendChild(el('td', agree ? 'agree' : null, nm));
+      vals.forEach((v) => r.appendChild(el('td', agree ? 'agree' : null, v)));
+      body.appendChild(r);
+    };
+    const block = (title, getS, kind) => {
+      const tr = el('tr'); const th = el('th', null, title); th.colSpan = PAIRS.length + 1; tr.appendChild(th); body.appendChild(tr);
+      FIELDS.forEach(([f, nm]) => addRow(nm, PAIRS.map((p) => { const s = getS(NC[p]); return s ? String(s[f]) : '–'; })));
+      addRow('Largest size without margin calls', PAIRS.map((p) => { const S = NC[p].sizing && NC[p].sizing[kind]; return S ? S.pick + '% of equity' : '–'; }));
+    };
+    block(aggDiffers ? 'Pair script (safer setup)' : 'Pair script', (D) => D.configs.script.s, 'safer');
+    if (aggDiffers) block('Aggressive setup', (D) => D.sizing && D.sizing.aggressive && D.sizing.aggressive.s, 'aggressive');
+    renderTakeaways($('#ov-takeaways'), OV.takeaways);
+    renderLeverageOverview();
+  }
+
+  // ---------- Leverage vs S&P 500 ----------
+  const LEV = window.NC_LEV || {};
+  const SPX = window.NC_SPX || null;
+  const LEVELS = [1, 10, 20, 50];
+  let levSel = 10;
+  const pctVal = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1) + '%';
+  const pctTick = (t) => (t < 0 ? '−' : '') + Math.abs(Math.round(t * 10) / 10) + '%';
+  const toPct = (pts) => pts.map((p) => [p[0], p[1] / 1000]);
+  const fmtDate = (s) => dateText(new Date(s + 'T12:00:00Z'));
+  const spxSeries = () => ({ cls: 'spx', color: 'var(--ink)', name: 'S&P 500', final: SPX.pct, pts: [[0, 0]].concat(toPct(parseCurve(SPX.curve))) });
+  const levRow = (pair, lev) => (LEV[pair] || []).find((r) => r.lev === lev);
+  const verdict = (pct) => {
+    const d = pct - SPX.pct;
+    const chip = el('span', 'vchip');
+    chip.appendChild(el('span', 'status ' + (d >= 0 ? 'ok' : 'no'), d >= 0 ? '✓' : '✕'));
+    chip.appendChild(document.createTextNode((d >= 0 ? 'Beats the S&P 500 by ' : 'Trails the S&P 500 by ') + Math.abs(d).toFixed(1) + ' pts'));
+    return chip;
+  };
+
+  function renderLeverageOverview() {
+    if (!SPX) return;
+    $('#lev-sub').textContent = 'Each pair\'s script at 10% of equity per trade multiplied by the leverage, with margin set to 100% ÷ leverage. The S&P 500 index, bought at ' + SPX.fromClose.toLocaleString('en-US') + ' (close ' + fmtDate(SPX.from) + ') and held to ' + SPX.toClose.toLocaleString('en-US') + ' (close ' + fmtDate(SPX.to) + '), returned ' + pctVal(SPX.pct) + ' with a ' + SPX.maxDDPct.toFixed(1) + '% max drawdown. All four charts share one scale.';
+    const sw = $('#lev-switch'); sw.replaceChildren();
+    LEVELS.forEach((L) => {
+      const b = el('button', null, L + '×'); b.type = 'button'; b.setAttribute('aria-pressed', String(L === levSel));
+      b.addEventListener('click', () => { if (levSel === L) return; levSel = L; renderLeverageOverview(); });
+      sw.appendChild(b);
+    });
+    const grid = $('#lev-grid'); grid.replaceChildren();
+    const spx = spxSeries();
+    let min = 0, max = SPX.pct;
+    spx.pts.forEach((p) => { min = Math.min(min, p[1]); max = Math.max(max, p[1]); });
+    const cards = PAIRS.filter((p) => levRow(p, levSel)).map((p) => { const r = levRow(p, levSel); const pts = [[0, 0]].concat(toPct(parseCurve(r.curve))); pts.forEach((q) => { min = Math.min(min, q[1]); max = Math.max(max, q[1]); }); return { p, r, pts }; });
+    cards.forEach(({ p, r, pts }) => {
+      const card = el('div', 'lev-card');
+      const head = el('div', 'lev-card-head'); head.appendChild(el('h3', null, pairName(p))); head.appendChild(verdict(r.pct)); card.appendChild(head);
+      const lg = el('div', 'lev-legend');
+      [['l' + levSel, scriptName(NC[p]) + ' at ' + levSel + '×', r.pct], ['spx', 'S&P 500', SPX.pct]].forEach(([cls, nm, v]) => { const s = el('span'); s.appendChild(el('span', 'key-line k-' + cls)); s.appendChild(document.createTextNode(nm)); s.appendChild(el('strong', null, pctVal(v))); lg.appendChild(s); });
+      card.appendChild(lg);
+      const ch = el('div', 'chart'); card.appendChild(ch); grid.appendChild(card);
+      lineChart(ch, null, [{ cls: 'l' + levSel, color: 'var(--l' + levSel + ')', name: scriptName(NC[p]) + ' at ' + levSel + '×', final: r.pct, pts }, spx], { label: pairName(p) + ' at ' + levSel + '× leverage against the S&P 500', height: 210, val: pctVal, tick: pctTick, min, max, nTicks: 4 });
+    });
+    const tb = $('#lev-table'); tb.replaceChildren();
+    PAIRS.forEach((p) => {
+      const tr = el('tr');
+      const td0 = el('td'); const b = el('button', 'pair-link', pairName(p)); b.type = 'button'; b.addEventListener('click', () => go(p)); td0.appendChild(b); td0.appendChild(el('span', 'sub2', scriptName(NC[p]))); tr.appendChild(td0);
+      let first = null;
+      LEVELS.forEach((L) => {
+        const r = levRow(p, L);
+        const beat = r && r.pct > SPX.pct;
+        const td = el('td', 'num' + (beat ? ' beat' : ''));
+        if (r) {
+          td.appendChild(document.createTextNode(pctVal(r.pct)));
+          if (beat) td.appendChild(el('span', 'mark', '✓'));
+          td.appendChild(el('span', 'sub2', 'DD ' + r.ddPct.toFixed(1) + '%' + (r.mc ? ' · ' + r.mc + ' margin calls' : '')));
+          if (first == null && beat) first = L;
+        } else td.textContent = '–';
+        tr.appendChild(td);
+      });
+      tr.appendChild(el('td', null, first == null ? 'Not up to 50×' : first + '× leverage'));
+      tb.appendChild(tr);
+    });
+    const trS = el('tr'); trS.appendChild(el('td', null, 'S&P 500 buy and hold'));
+    const tdS = el('td', 'num', pctVal(SPX.pct) + ' at every level (no leverage)'); tdS.colSpan = 4; tdS.appendChild(el('span', 'sub2', 'DD ' + SPX.maxDDPct.toFixed(1) + '%')); trS.appendChild(tdS);
+    trS.appendChild(el('td', null, 'Benchmark')); tb.appendChild(trS);
+  }
+
+  function renderPairLeverage(D) {
+    const rows = LEV[D.label] || [];
+    const host = $('#plev-chart'); const tb = $('#plev-table'); tb.replaceChildren();
+    if (!SPX || !rows.length) { host.replaceChildren(); $('#plev-legend').replaceChildren(); $('#plev-sub').textContent = 'Leverage results are not available for this pair.'; return; }
+    $('#plev-sub').textContent = scriptName(D) + ' at 10% of equity per trade × leverage (margin 100% ÷ leverage), against the S&P 500 bought and held over the same dates (' + pctVal(SPX.pct) + '). Returns are on the $100K account.';
+    const series = rows.map((r) => ({ cls: 'l' + r.lev, color: 'var(--l' + r.lev + ')', name: r.lev + '×', final: r.pct, pts: [[0, 0]].concat(toPct(parseCurve(r.curve))) })).concat([spxSeries()]);
+    lineChart(host, $('#plev-legend'), series, { label: 'Return at each leverage against the S&P 500', val: pctVal, tick: pctTick });
+    rows.forEach((r) => {
+      const tr = el('tr');
+      [[r.lev + '×', ''], [r.size + '% of equity', 'num'], [r.margin + '%', 'num'], [money(r.net), 'num'], [pctVal(r.pct), 'num'], [money(r.dd, false) + ' (' + r.ddPct.toFixed(1) + '%)', 'num'], [String(r.trades), 'num'], [r.pf.toFixed(2), 'num'], [String(r.mc), 'num']].forEach(([t, c]) => tr.appendChild(el('td', c || null, t)));
+      const tdv = el('td'); tdv.appendChild(verdict(r.pct)); tr.appendChild(tdv);
+      tb.appendChild(tr);
+    });
+  }
+
+  // ---------- Pair view ----------
+  const ENT = [
+    { key: 'original', cls: 'orig', color: 'var(--orig)' },
+    { key: 'script', cls: 's1', color: 'var(--s1)' },
+    { key: 'best', cls: 's2', color: 'var(--s2)' },
+  ];
+
+  function renderContext(D) {
+    $('#title').textContent = pairName(D.label) + ' results';
+    const c = $('#context'); c.replaceChildren();
+    c.appendChild(el('span', 'sym', D.symbol));
+    c.appendChild(document.createTextNode(' · price ' + (D.buyHold < 0 ? 'fell ' : 'rose ') + Math.abs(D.buyHold).toFixed(1) + '% over the period · ' + D.tested.toLocaleString('en-US') + ' combinations backtested · script: "' + scriptName(D) + '".'));
+  }
+
+  function renderTiles(D) {
+    const host = $('#tiles'); host.replaceChildren();
+    const o = D.configs.original;
+    const configTile = (key, cls, label) => {
+      const c = D.configs[key];
+      const t = el('article', 'tile');
+      const lab = el('div', 'tile-label'); lab.appendChild(el('span', 'key-line k-' + cls)); lab.appendChild(el('span', null, label)); t.appendChild(lab);
+      t.appendChild(el('div', 'tile-value', money(c.net)));
+      t.appendChild(el('div', 'tile-meta', c.n + ' trades · ' + c.win.toFixed(1) + '% win · PF ' + c.pf.toFixed(2) + ' · max DD ' + money(c.dd, false)));
+      t.appendChild(el('div', 'tile-meta', splitText(c)));
+      const foot = el('div', 'tile-foot'); foot.appendChild(el('span', 'chip', DIR[c.dir]));
+      if (key !== 'original') { const d = c.net - o.net; foot.appendChild(el('span', 'delta ' + (d >= 0 ? 'up' : 'down'), (d >= 0 ? '▲ ' : '▼ ') + money(d) + ' vs original')); }
+      t.appendChild(foot); host.appendChild(t);
+    };
+    configTile('original', 'orig', 'Original settings, 10% size');
+    configTile('script', 's1', scriptName(D) + ', 10% size');
+    const S = D.sizing && D.sizing.safer; const pk = pickRow(S);
+    if (pk) {
+      const t = el('article', 'tile');
+      const lab = el('div', 'tile-label'); lab.appendChild(el('span', 'key-line k-s1')); lab.appendChild(el('span', null, scriptName(D) + ', ' + S.pick + '% size')); t.appendChild(lab);
+      t.appendChild(el('div', 'tile-value', money(pk.net)));
+      t.appendChild(el('div', 'tile-meta', pk.trades + ' trades · PF ' + pk.pf.toFixed(2) + ' · max DD ' + money(pk.dd, false) + ' (' + pk.ddPct.toFixed(1) + '%)'));
+      t.appendChild(el('div', 'tile-meta', 'Largest size without margin calls, no leverage'));
+      const foot = el('div', 'tile-foot'); foot.appendChild(el('span', 'chip', pct(pk.net / 1000) + ' on $100K')); t.appendChild(foot);
+      host.appendChild(t);
+    }
+    if (!bestIsScript(D)) { configTile('best', 's2', 'Best overall, 10% size'); return; }
+    const t = el('article', 'tile');
+    const lab = el('div', 'tile-label'); lab.appendChild(el('span', null, 'Combinations tested')); t.appendChild(lab);
+    t.appendChild(el('div', 'tile-value', D.tested.toLocaleString('en-US')));
+    t.appendChild(el('div', 'tile-meta', D.profitable.toLocaleString('en-US') + ' made money · ' + D.passing.toLocaleString('en-US') + ' passed your guardrails'));
+    t.appendChild(el('div', 'tile-meta', 'The best overall result is the script itself.'));
+    const foot = el('div', 'tile-foot'); foot.appendChild(el('span', 'chip', 'Drawdown cap ' + money(D.ddCap, false) + ' at 10%')); t.appendChild(foot);
+    host.appendChild(t);
+  }
+
+  function renderEquity(D) {
+    const same = bestIsScript(D);
+    const series = ENT.filter((e) => !(same && e.key === 'best')).map((e) => ({ ...e, name: e.key === 'script' ? scriptName(D) + (same ? ' (also best overall)' : '') : D.configs[e.key].name, final: D.configs[e.key].net, pts: [[0, 0]].concat(parseCurve(D.curves[e.key])) }));
+    lineChart($('#eq-chart'), $('#eq-legend'), series, { label: 'Cumulative profit at 10% size' });
+  }
+
+  function renderSetups(D) {
+    const host = $('#setups'); host.replaceChildren();
+    const Z = D.sizing;
+    if (!Z) { host.appendChild(el('p', 'sub', 'Position sizing results are not available for this pair yet.')); $('#sz-eq-chart').replaceChildren(); $('#sz-eq-legend').replaceChildren(); return; }
+    const same = setupsSame(Z);
+    $('#su-title').textContent = same ? 'Sized setup' : 'Safer vs aggressive setup';
+    $('#su-sub').textContent = same
+      ? 'Two searches were run: the safer one sizes up the script\'s settings, the aggressive one picks settings and size together for the most profit with max drawdown up to $10,000. On ' + pairName(D.label) + ' both landed on the same result, shown here.'
+      : 'Both trade longs and shorts and are sized to the largest position that keeps max drawdown at or under $10,000 without margin calls.';
+    $('#sz-eq-sub').textContent = same ? 'Equity at the chosen size.' : 'Equity at each setup\'s chosen size.';
+    const kinds = same
+      ? [['safer', 's1', scriptName(D) + ' at ' + Z.safer.pick + '% of equity', 'Your pair script\'s settings at the largest size without margin calls. No leverage.']]
+      : [['safer', 's1', 'Safer setup', 'Pair script settings (your guardrail), then sized up'], ['aggressive', 's3', 'Aggressive setup', 'Settings and size chosen together for the most profit']];
+    kinds.forEach(([k, cls, title, rule]) => {
+      const S = Z[k]; const pk = pickRow(S);
+      const card = el('div', 'setup' + (same ? ' wide' : ''));
+      const h = el('div', 'setup-head'); h.appendChild(el('span', 'key-line k-' + cls)); h.appendChild(el('h3', null, title)); card.appendChild(h);
+      card.appendChild(el('p', 'setup-rule', rule));
+      if (!pk) { card.appendChild(el('p', 'sub', 'No size stayed under the drawdown limit.')); host.appendChild(card); return; }
+      const figs = el('div', 'setup-figs');
+      figs.appendChild(el('span', 'setup-net', money(pk.net)));
+      [['Size', S.pick + '% of equity'], ['Max DD', money(pk.dd, false) + ' (' + pk.ddPct.toFixed(1) + '%)'], ['Trades', String(pk.trades)], ['PF', pk.pf.toFixed(2)]].forEach(([a, b]) => { const f = el('span', 'fig'); f.appendChild(document.createTextNode(a + ' ')); f.appendChild(el('strong', null, b)); figs.appendChild(f); });
+      card.appendChild(figs);
+      const dl = el('dl', 'kv');
+      const s = S.s;
+      [['Trend', s.trend], ['Pivot', String(s.pivot)], ['EMA', String(s.ema)], ['Validity', String(s.validity)], ['Pending', String(s.pending)], ['Wick tol', String(s.wick)], ['Stop loss', s.sl], ['Reward:risk', String(s.rr)], ['At 10% size', money(S.at10.net) + ' · DD ' + money(S.at10.dd, false) + ' · ' + S.at10.n + ' trades']].forEach(([a, b]) => { dl.appendChild(el('dt', null, a)); dl.appendChild(el('dd', null, b)); });
+      card.appendChild(dl);
+      host.appendChild(card);
+    });
+    const series = [];
+    (same ? [['safer', 's1', 'var(--s1)', scriptName(D)]] : [['safer', 's1', 'var(--s1)', 'Safer'], ['aggressive', 's3', 'var(--s3)', 'Aggressive']]).forEach(([k, cls, color, nm]) => {
+      const S = Z[k]; const pk = pickRow(S);
+      if (pk && D.sizedCurves && D.sizedCurves[k]) series.push({ cls, color, name: nm + ' at ' + S.pick + '%', final: pk.net, pts: [[0, 0]].concat(parseCurve(D.sizedCurves[k])) });
+    });
+    lineChart($('#sz-eq-chart'), $('#sz-eq-legend'), series, { label: 'Cumulative profit at the chosen size', height: 260 });
+  }
+
+  function renderSizing(D) {
+    const Z = D.sizing;
+    const tb = $('#sz-table'); tb.replaceChildren(); const th = $('#sz-head'); th.replaceChildren(); const lg = $('#sz-legend'); lg.replaceChildren();
+    if (!Z) { $('#sz-net').replaceChildren(); $('#sz-dd').replaceChildren(); return; }
+    const same = setupsSame(Z);
+    const kinds = (same ? [['safer', 's1', scriptName(D)]] : [['safer', 's1', 'Safer'], ['aggressive', 's3', 'Aggressive']]).filter(([k]) => Z[k]);
+    kinds.forEach(([, cls, nm]) => { const s = el('span'); s.appendChild(el('span', 'key-line k-' + cls)); s.appendChild(document.createTextNode(nm)); lg.appendChild(s); });
+    const series = kinds.map(([k, cls, nm]) => ({ cls, name: nm, rows: Z[k].rows, pick: Z[k].pick }));
+    sizeChart($('#sz-net'), series, { sizes: Z.sizes, field: 'net', title: 'Net profit by size' });
+    sizeChart($('#sz-dd'), series, { sizes: Z.sizes, field: 'dd', title: 'Max drawdown by size', limit: Z.ddMax });
+    const hr = el('tr'); hr.appendChild(el('th', 'num', 'Size'));
+    kinds.forEach(([, , nm]) => { hr.appendChild(el('th', 'num', same ? 'Net' : nm + ' net')); hr.appendChild(el('th', 'num', same ? 'Max drawdown' : nm + ' max DD')); hr.appendChild(el('th', 'num', same ? 'Margin calls' : nm + ' margin calls')); });
+    th.appendChild(hr);
+    Z.sizes.forEach((size) => {
+      const tr = el('tr');
+      const picks = kinds.filter(([k]) => Z[k].pick === size).map(([, , nm]) => nm);
+      if (picks.length) tr.className = 'pick';
+      tr.appendChild(el('td', 'num', size + '%' + (picks.length ? (same ? ' · chosen' : ' · ' + picks.join(' + ') + ' pick') : '')));
+      kinds.forEach(([k]) => {
+        const r = Z[k].rows.find((x) => x.size === size);
+        tr.appendChild(el('td', 'num', r ? money(r.net) : '–'));
+        tr.appendChild(el('td', 'num', r ? money(r.dd, false) + ' (' + r.ddPct.toFixed(1) + '%)' : '–'));
+        tr.appendChild(el('td', 'num', r ? String(r.mc) : '–'));
+      });
+      tb.appendChild(tr);
+    });
+  }
+
+  function renderTakeaways(host, T) {
+    host.replaceChildren();
+    if (!T) { host.appendChild(el('p', 'sub', 'Summary coming once testing finishes.')); return; }
+    [['ok', '✓', 'Worked', T.worked], ['no', '✕', "Didn't work", T.failed]].forEach(([cls, icon, title, items]) => {
+      const col = el('div'); const h = el('h3'); h.appendChild(el('span', 'status ' + cls, icon)); h.appendChild(document.createTextNode(title)); col.appendChild(h);
+      const ul = el('ul'); (items || []).forEach((t) => ul.appendChild(el('li', null, t))); col.appendChild(ul); host.appendChild(col);
+    });
+    if (T.note) host.appendChild(el('p', 'tk-note', T.note));
+  }
+
+  function renderStage1(D) {
+    const host = $('#stage1'); host.replaceChildren();
+    const base = D.configs.original.net;
+    $('#s1-sub').textContent = 'Each row changes one setting from your original settings (' + money(base) + ' at 10% size) and keeps the rest. Bars show the change in net profit.';
+    const rows = D.stage1.map((r) => ({ group: r[0], label: r[1], net: r[2], n: r[3], pf: r[4], dd: r[5], delta: r[2] - base }));
+    const maxAbs = Math.max(1, ...rows.map((r) => Math.abs(r.delta)));
+    let group = null, gEl = null;
+    rows.forEach((r) => {
+      if (r.group !== group) { group = r.group; gEl = el('div', 's1-group'); gEl.appendChild(el('h3', 's1-head', group)); host.appendChild(gEl); }
+      const row = el('div', 's1-row' + (Math.abs(r.delta) < 0.5 ? ' base' : '')); row.tabIndex = 0;
+      row.appendChild(el('span', 's1-label', r.label));
+      const track = el('span', 's1-track');
+      const bar = el('span', 's1-bar ' + (r.delta >= 0 ? 'pos' : 'neg'));
+      bar.style.width = (Math.abs(r.delta) / maxAbs) * 50 + '%';
+      if (r.delta >= 0) bar.style.left = '50%'; else bar.style.right = '50%';
+      track.appendChild(bar); row.appendChild(track);
+      row.appendChild(el('span', 's1-val', money(r.delta)));
+      bindTip(row, r.label, [{ value: money(r.net), label: 'net profit' }, { value: money(r.delta), label: 'vs original' }, { value: String(r.n), label: 'trades' }, { value: r.pf.toFixed(2), label: 'profit factor' }, { value: money(r.dd, false), label: 'max drawdown' }]);
+      gEl.appendChild(row);
+    });
+  }
+
+  function renderSens(D) {
+    const host = $('#sens'); host.replaceChildren();
+    const sameAsBest = bestIsScript(D);
+    $('#sens-switch').hidden = sameAsBest;
+    if (sameAsBest) sensKey = 'script';
+    const S = D.sens[sensKey];
+    const who = D.configs[sensKey];
+    const cls = sensKey === 'best' ? 's2' : 's1';
+    const parsed = Object.keys(S).map((name) => ({ name, items: parseSens(S[name]) })).filter((p) => p.items.length);
+    let min = 0, max = 0;
+    parsed.forEach((p) => p.items.forEach((it) => { min = Math.min(min, it.net); max = Math.max(max, it.net); }));
+    const span = (max - min) || 1;
+    $('#sm-sub').textContent = 'Net profit at 10% size when one setting moves away from ' + (sensKey === 'best' ? 'the best overall combination' : sameAsBest ? 'the script defaults, which are also the best overall result' : 'the script defaults') + ' (' + money(who.net) + ') and the rest stay put. Every panel uses the same scale, ' + money(min) + ' to ' + money(max) + '. Faded bars and × labels fail your guardrails.';
+    ['script', 'best'].forEach((k) => $('#s-' + k).setAttribute('aria-pressed', String(k === sensKey)));
+    const H = 104; const zeroTop = (max / span) * H;
+    parsed.forEach((p) => {
+      const card = el('div', 'sm' + (p.items.length > 8 ? ' wide' : ''));
+      const chosen = p.items.find((i) => i.chosen);
+      const head = el('div', 'sm-head'); head.appendChild(el('h3', null, p.name));
+      if (chosen) head.appendChild(el('span', 'sm-chosen', chosen.label + ' · ' + money(chosen.net)));
+      card.appendChild(head);
+      const plot = el('div', 'sm-plot'); plot.style.height = H + 'px';
+      const z = el('span', 'sm-zero'); z.style.top = zeroTop + 'px'; plot.appendChild(z);
+      const cols = el('div', 'sm-cols');
+      p.items.forEach((it) => {
+        const col = el('div', 'sm-col' + (it.fail ? ' fail' : '')); col.tabIndex = 0;
+        const bar = el('span', 'sm-bar ' + (it.chosen ? cls : 'mute') + (it.net < 0 ? ' down' : ' up'));
+        bar.style.height = Math.max(1.5, (Math.abs(it.net) / span) * H) + 'px';
+        if (it.net >= 0) bar.style.bottom = (H - zeroTop) + 'px'; else bar.style.top = zeroTop + 'px';
+        col.appendChild(bar);
+        const rows = [{ value: money(it.net), label: 'net profit' }, { value: String(it.n), label: 'trades' }];
+        if (it.fail) rows.push({ value: 'Fails', label: 'your guardrails' });
+        if (it.chosen) rows.push({ value: 'Chosen', label: 'value' });
+        bindTip(col, p.name + ': ' + it.label, rows);
+        cols.appendChild(col);
+      });
+      plot.appendChild(cols); card.appendChild(plot);
+      const labs = el('div', 'sm-labels');
+      p.items.forEach((it) => labs.appendChild(el('span', it.chosen ? 'on' : '', shortLabel(it.label) + (it.fail ? ' ×' : ''))));
+      card.appendChild(labs);
+      if (p.name === 'Stop loss') card.appendChild(el('p', 'sm-note', 'Swing = stop at the last swing; +5/+10/+20 add a tick buffer; w = beyond the swing candle\'s wick. ×0.5 to ×6 = NO candle range multiplier.'));
+      host.appendChild(card);
+    });
+  }
+
+  function renderScatter(D) {
+    const host = $('#sc-chart'); host.replaceChildren();
+    $('#sc-sub').textContent = 'Each dot is one backtest at 10% size: trades on a log scale across, net profit up. Faded dots fail your guardrails (under 100 trades, or max drawdown above ' + money(D.ddCap, false) + ').';
+    const pts = parseScatter(D.scatter);
+    const W = Math.max(280, host.clientWidth); const H = W < 560 ? 290 : 400;
+    const m = { l: 62, r: 16, t: 14, b: 34 };
+    const nMin = 50; const nMax = Math.max(...pts.map((p) => p.n)) * 1.08; const L = Math.log10;
+    const x = (n) => m.l + ((L(Math.max(n, nMin)) - L(nMin)) / (L(nMax) - L(nMin))) * (W - m.l - m.r);
+    let min = 0, max = 0; pts.forEach((p) => { min = Math.min(min, p.net); max = Math.max(max, p.net); });
+    const { lo, hi, ticks } = niceTicks(min, max, W < 560 ? 5 : 7);
+    const y = (v) => m.t + ((hi - v) / (hi - lo)) * (H - m.t - m.b);
+    const svg = sv('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, class: 'chart-svg', role: 'img', 'aria-label': 'Net profit against number of trades for every combination tested' }, host);
+    sv('rect', { x: m.l, y: m.t, width: Math.max(0, x(100) - m.l), height: H - m.t - m.b, class: 'band' }, svg);
+    if (x(100) - m.l > 70) svText(svg, { x: m.l + 6, y: m.t + 14, class: 'band-label' }, 'Under 100 trades');
+    ticks.forEach((t) => { sv('line', { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), class: t === 0 ? 'zero' : 'grid' }, svg); svText(svg, { x: m.l - 8, y: y(t), class: 'tick', 'text-anchor': 'end', 'dominant-baseline': 'middle' }, money(t, false)); });
+    [50, 100, 200, 500, 1000, 2000, 5000].filter((t) => t <= nMax).forEach((t) => { sv('line', { x1: x(t), x2: x(t), y1: H - m.b, y2: H - m.b + 4, class: 'axis' }, svg); svText(svg, { x: x(t), y: H - m.b + 18, class: 'tick', 'text-anchor': 'middle' }, t >= 1000 ? t / 1000 + 'k' : String(t)); });
+    svText(svg, { x: W - m.r, y: H - 2, class: 'tick', 'text-anchor': 'end' }, 'trades →');
+    const drawn = pts.map((p) => ({ ...p, px: x(p.n), py: y(p.net), ok: passes(D, p.n, p.dd) }));
+    const layer = sv('g', {}, svg);
+    drawn.filter((p) => !p.ok).forEach((p) => sv('circle', { cx: p.px, cy: p.py, r: 3, class: 'pt fail d-' + p.dir }, layer));
+    drawn.filter((p) => p.ok).forEach((p) => sv('circle', { cx: p.px, cy: p.py, r: 3, class: 'pt pass d-' + p.dir }, layer));
+    const marks = [['best', 'Best overall'], ['script', 'Script']];
+    const same = D.configs.best.net === D.configs.script.net && D.configs.best.n === D.configs.script.n;
+    (same ? [['script', 'Script = best']] : marks).forEach(([k, name]) => {
+      const c = D.configs[k]; const px = x(c.n), py = y(c.net);
+      sv('circle', { cx: px, cy: py, r: 7, class: 'mark-ring' }, svg);
+      const right = px < W - 120;
+      svText(svg, { x: right ? px + 11 : px - 11, y: py - 9, class: 'mark-label', 'text-anchor': right ? 'start' : 'end' }, name);
+    });
+    const ring = sv('circle', { r: 6, class: 'hover-ring', visibility: 'hidden' }, svg);
+    const hit = sv('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, class: 'hit' }, svg);
+    hit.addEventListener('pointermove', (e) => {
+      const r = svg.getBoundingClientRect(); const mx = e.clientX - r.left, my = e.clientY - r.top;
+      let best = null, bd = 24 * 24;
+      for (const p of drawn) { const d = (p.px - mx) * (p.px - mx) + (p.py - my) * (p.py - my); if (d < bd) { bd = d; best = p; } }
+      if (!best) { ring.setAttribute('visibility', 'hidden'); hideTip(); return; }
+      ring.setAttribute('cx', best.px); ring.setAttribute('cy', best.py); ring.setAttribute('visibility', 'visible');
+      showTip(e.clientX, e.clientY, DIR[best.dir], [{ value: money(best.net), label: 'net profit' }, { value: String(best.n), label: 'trades' }, { value: money(best.dd, false), label: 'max drawdown' }, { value: best.pf.toFixed(2), label: 'profit factor' }, { value: best.ok ? 'Passes' : 'Fails', label: 'your guardrails' }]);
+    });
+    hit.addEventListener('pointerleave', () => { ring.setAttribute('visibility', 'hidden'); hideTip(); });
+  }
+
+  function renderTop(D) {
+    const body = $('#top-body'); body.replaceChildren();
+    D.top.forEach((r, i) => {
+      const tr = el('tr');
+      [[String(i + 1), 'num'], [money(r[0]), 'num'], [String(r[1]), 'num'], [r[2].toFixed(1), 'num'], [r[3].toFixed(2), 'num'], [money(r[4], false), 'num'], [r[5], ''], [String(r[6]), 'num'], [String(r[7]), 'num'], [String(r[8]), 'num'], [String(r[9]), 'num'], [String(r[10]), 'num'], [r[11], ''], [String(r[12]), 'num'], [r[13], '']].forEach(([t, c]) => tr.appendChild(el('td', c || null, t)));
+      body.appendChild(tr);
+    });
+  }
+
+  function renderNotable(D) {
+    const body = $('#nt-body'); body.replaceChildren();
+    $('#nt-sub').textContent = 'The best combination under other filters, from the same ' + D.tested.toLocaleString('en-US') + ' backtests. Your guardrails on ' + pairName(D.label) + ': at least 100 trades and max drawdown no worse than ' + money(D.ddCap, false) + ' at 10% size.';
+    (D.notable || []).forEach((r) => {
+      const tr = el('tr');
+      const lab = el('td', 'nt-label'); lab.appendChild(el('div', null, r.label)); if (r.note) lab.appendChild(el('div', 'nt-note', r.note)); tr.appendChild(lab);
+      [money(r.net), String(r.n), r.win.toFixed(1), r.pf.toFixed(2), money(r.dd, false), r.dir === 'short' ? 'off' : money(r.L), r.dir === 'long' ? 'off' : money(r.S)].forEach((t) => tr.appendChild(el('td', 'num', t)));
+      const g = el('td'); const chip = el('span', 'gchip'); chip.appendChild(el('span', 'status ' + (r.pass ? 'ok' : 'no'), r.pass ? '✓' : '✕')); chip.appendChild(document.createTextNode(r.pass ? 'Passes' : 'Drawdown over cap')); g.appendChild(chip); tr.appendChild(g);
+      tr.appendChild(el('td', 'settings-cell', r.settings));
+      body.appendChild(tr);
+    });
+  }
+
+  function renderNotes() {
+    const parts = PAIRS.map((p) => money(NC[p].ddCap, false) + ' on ' + pairName(p));
+    $('#note-guard').textContent = 'Your guardrails for choosing settings: at least 100 trades, and a max drawdown at 10% size no worse than the original settings on that pair (' + parts.join(', ') + '). Sizing then allows up to $10,000 (10%) max drawdown.';
+  }
+
+  function renderCharts() {
+    if (view === 'ALL') return;
+    const D = NC[view];
+    renderEquity(D); renderSetups(D); renderSizing(D); renderPairLeverage(D); renderScatter(D);
+  }
+
+  function renderView() {
+    document.querySelectorAll('#market-switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    $('#view-all').hidden = view !== 'ALL';
+    $('#view-pair').hidden = view === 'ALL';
+    hideTip();
+    if (view === 'ALL') { renderOverview(); return; }
+    const D = NC[view];
+    if (!D.configs.script) D.configs.script = D.configs.v2;
+    renderContext(D); renderTiles(D); renderTakeaways($('#takeaways'), D.takeaways); renderStage1(D); renderSens(D); renderTop(D); renderNotable(D);
+    renderCharts();
+  }
+
+  function go(v) {
+    view = v;
+    try { history.replaceState(null, '', '#' + v.toLowerCase()); } catch (e) {}
+    renderView();
+    window.scrollTo(0, 0);
+  }
+
+  const sw = $('#market-switch');
+  [['ALL', 'All pairs']].concat(PAIRS.map((p) => [p, pairName(p)])).forEach(([v, lab]) => {
+    const b = el('button', null, lab); b.type = 'button'; b.dataset.view = v; b.id = 'v-' + v;
+    b.addEventListener('click', () => { if (view !== v) go(v); });
+    sw.appendChild(b);
+  });
+  document.querySelectorAll('#sens-switch button').forEach((b) => b.addEventListener('click', () => { if (sensKey === b.dataset.sens) return; sensKey = b.dataset.sens; renderSens(NC[view]); }));
+
+  const fromHash = (location.hash || '').replace('#', '').toUpperCase();
+  view = fromHash === 'ALL' || NC[fromHash] ? fromHash : 'ALL';
+  PAIRS.forEach((p) => { if (!NC[p].configs.script) NC[p].configs.script = NC[p].configs.v2; });
+  renderNotes();
+  renderView();
+
+  let lastW = 0, raf = 0;
+  const ro = new ResizeObserver(() => { const w = document.querySelector('.page').clientWidth; if (Math.abs(w - lastW) < 2) return; lastW = w; cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { if (view === 'ALL') renderOverview(); else renderCharts(); }); });
+  ro.observe(document.querySelector('.page'));
+  window.addEventListener('scroll', hideTip, { passive: true });
+})();
+</script>

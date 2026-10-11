@@ -1,17 +1,17 @@
 # NO Candle strategy (Pine Script v6)
 
-Strategy file: `no_wick_stratergy.pine` (repo root).
+Strategy file: `strategy/no_candle_strategy.pine`.
 
 ## TradingView sync (local sessions with Claude in Chrome only)
 
-After every change to `no_wick_stratergy.pine`, if browser tools are available:
+After every change to `strategy/no_candle_strategy.pine`, if browser tools are available:
 
 1. Copy the whole file to the clipboard with a shell command. Never type the code
    into the editor: the Pine Editor auto-indents and auto-closes brackets, which
    corrupts it.
-   - macOS: `pbcopy < no_wick_stratergy.pine`
-   - Windows (PowerShell): `Get-Content no_wick_stratergy.pine -Raw | Set-Clipboard`
-   - Linux: `xclip -selection clipboard < no_wick_stratergy.pine`
+   - macOS: `pbcopy < strategy/no_candle_strategy.pine`
+   - Windows (PowerShell): `Get-Content strategy/no_candle_strategy.pine -Raw | Set-Clipboard`
+   - Linux: `xclip -selection clipboard < strategy/no_candle_strategy.pine`
 2. In the TradingView tab, open the Pine Editor on the saved script
    "NO Candle Strategy" (create it the first time). Click into the editor,
    select all (Ctrl/Cmd+A), paste (Ctrl/Cmd+V) and save (Ctrl/Cmd+S).
